@@ -1,0 +1,67 @@
+import json
+import os
+
+DATA_FILE = "books.json"
+
+def load_books():
+    if not os.path.exists(DATA_FILE):
+        return []
+    with open(DATA_FILE, "r", encoding="utf-8") as f:
+        try:
+            return json.load(f)
+        except json.JSONDecodeError:
+            return []
+
+def show_books(books):
+    if not books:
+        print("Список книг пуст.\n")
+        return
+    for i, book in enumerate(books, 1):
+        print(f"{i}. {book['author']} — «{book['title']}» | Оценка: {book['rating']} | Дата: {book['date']}")
+    print()
+
+def average_rating(books):
+    if not books:
+        print("Нет книг для расчёта.\n")
+        return
+    avg = sum(b["rating"] for b in books) / len(books)
+    print(f"Средняя оценка: {avg:.2f}\n")
+
+def author_stats(books):
+    if not books:
+        print("Нет книг.\n")
+        return
+    stats = {}
+    for book in books:
+        author = book["author"]
+        stats[author] = stats.get(author, 0) + 1
+    print("Статистика по авторам:")
+    for author, count in stats.items():
+        print(f"  {author}: {count} книг(а/и)")
+    print()
+
+def main():
+    books = load_books()
+    while True:
+        print("\n=== Трекер прочитанных книг ===")
+        print("1. Добавить книгу (в разработке)")
+        print("2. Показать все книги")
+        print("3. Показать среднюю оценку")
+        print("4. Статистика по авторам")
+        print("5. Удалить книгу (в разработке)")
+        print("6. Выход")
+        choice = input("Выберите действие: ").strip()
+        if choice == "2":
+            show_books(books)
+        elif choice == "3":
+            average_rating(books)
+        elif choice == "4":
+            author_stats(books)
+        elif choice == "6":
+            print("До свидания!")
+            break
+        else:
+            print("Этот функционал будет добавлен позже.\n")
+
+if __name__ == "__main__":
+    main()
